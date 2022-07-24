@@ -1,12 +1,9 @@
-import logging
-from botocore.exceptions import ClientError
 import boto3
-import botocore
 import os
 
 def upload_file(file_name, bucket, object_name=None):
-    """_summary_
-
+    """ s3へのファイルアップロード時のAPIとして1,upload_file/2.put_objectの2種類ある
+        双方のAPIの仕様差異については右記参照（https://stackoverflow.com/questions/43739415/what-is-the-difference-between-file-upload-and-put-object-when-uploading-fil）
     Args:
         file_name (_type_): _description_
         bucket (_type_): _description_
@@ -15,19 +12,18 @@ def upload_file(file_name, bucket, object_name=None):
     if object_name is None:
         object_name = os.path.basename(file_name)
 
+    # boto3.set_stream_logger()
+    # botocore.session.Session().set_debug_logger()
+    with open(file_name, 'rb') as f:
+        s3 = boto3.client('s3')
+        response = s3.put_object(
+            Body=f,
+            Bucket=bucket,
+            Key=object_name
+        )
+    print(response)
+    return response['ResponseMetadata']['HTTPStatusCode'] == 200
     
-    boto3.set_stream_logger()
-    botocore.session.Session().set_debug_logger()
-
-    
-    s3_client = boto3.client('s3')
-    
-    try:
-        response = s3_client.upload_file(file_name, bucket, object_name)
-    except ClientError as e:
-        logging.error(e)
-        return False
-    return True
     
 
 def make_text_file(file_name):

@@ -1,4 +1,5 @@
 import boto3
+import botocore
 import os
 
 def upload_file(file_name, bucket, object_name=None):

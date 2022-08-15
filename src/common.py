@@ -1,7 +1,15 @@
 import json
+import logging
 import os
 import shutil
 import zipfile
+
+
+def set_up():
+    pass
+    # dbのコレクションにDelete時のパラメーター設定がされているか
+    # s3バケットがそんざいするか 
+    
 
 # Jsonのファイル出力とZip化
 def create_json_file(dic):
@@ -28,24 +36,13 @@ def ret_exec_path():
     path = os.path.dirname(os.path.abspath(__file__))
     return path
 
-# 処理時間の計測 
-import time
-start = time.time()
 
-student = {
-    "name": "Suzuki",
-    "age": 15,
-    "gender": "male"
-}
-
-
-
-path = create_json_file(student)
-create_zip([path])
-
-# 処理時間　計測
-end = time.time()
-print(f'処理時間(秒)：{end-start}')
-
-
-
+# route_listからDict参照文を生成
+def get_node_id(dict, route_list):
+    route_str = ''
+    for val in route_list:
+        route_str += f'["{val}"]'
+    node_id = eval(f'dict{route_str}')
+    
+    return node_id 
+    
